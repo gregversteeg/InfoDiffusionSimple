@@ -1,7 +1,7 @@
 # Simple Information-theoretic diffusion
 
 A repository for the paper at this
-[overleaf](https://www.overleaf.com/project/63a012c4e0cc7265b8272696)
+[here](https://openreview.net/forum?id=UvmDCdSPDOW)
 link containing simplified examples. 
 
 
