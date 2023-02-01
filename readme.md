@@ -1,8 +1,8 @@
 # Simple Information-theoretic diffusion
 
-A repository for the paper at this
+A repository for the ICLR paper 
 [here](https://openreview.net/forum?id=UvmDCdSPDOW)
-link containing simplified examples. 
+containing simplified examples. 
 
 
 ## Requirements

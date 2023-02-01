@@ -29,3 +29,6 @@ class MLP(nn.Module):
         for layer in self.layers:
             x = layer(x)
         return x
+
+# TODO: input embeddings were super useful in https://github.com/tanelp/tiny-diffusion/blob/master/positional_embeddings.py
+# Time embeddings were not as important.
