@@ -1,6 +1,6 @@
 # Simple Information-theoretic diffusion
 
-A repository for the ICLR paper 
+A repository for the ICLR 2023 paper 
 [here](https://openreview.net/forum?id=UvmDCdSPDOW)
 containing simplified examples. 
 
@@ -16,7 +16,7 @@ Pytorch lightning is used to simplify boilerplate,
 and makes it easier to exploit different compute resources. 
 
 
-## Train and evaluate 2D example
+## Train and evaluate 2D examples
 
 To train and generate figures, run this notebook. 
 
@@ -34,6 +34,14 @@ tensorboard --logdir .
 ```
 Optionally, you can do "python train.py", 
 and then load the checkpoint in the IPython notebook (optional cell included) to show the visualizations.
+
+## Train on CIFAR-10
+
+```train
+python train_cifar10.py
+```
+MSE curves and log likelihoods are tracked in tensorboard. 
+Checkpoints are saved automatically by Pytorch Lightning
 
 ## Results
 
