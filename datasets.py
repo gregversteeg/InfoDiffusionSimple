@@ -1,4 +1,9 @@
-# Nice 2-d examples from: https://github.com/tanelp/tiny-diffusion
+"""
+Nice 2-d examples from: https://github.com/tanelp/tiny-diffusion
+Standardizing the data, scale to have unit variance, as we do here. helps with interpretability,
+as discussed in "Information-theoretic diffusion". The gap between MMSE and gaussian MMSE should be non-negative
+and log likelihood can be interpreted as a stochastic lower bound on the true log likelihood.
+"""
 import numpy as np
 import pandas as pd
 import torch
@@ -11,6 +16,8 @@ def moons_dataset(n=8000):
     X, _ = make_moons(n_samples=n, random_state=42, noise=0.03)
     X[:, 0] = (X[:, 0] + 0.3) * 2 - 1
     X[:, 1] = (X[:, 1] + 0.3) * 3 - 1
+    X -= X.mean(axis=0)
+    X /= X.std(axis=0)
     return TensorDataset(torch.from_numpy(X.astype(np.float32)))
 
 
@@ -19,7 +26,8 @@ def line_dataset(n=8000):
     x = rng.uniform(-0.5, 0.5, n)
     y = rng.uniform(-1, 1, n)
     X = np.stack((x, y), axis=1)
-    X *= 4
+    X -= X.mean(axis=0)
+    X /= X.std(axis=0)
     return TensorDataset(torch.from_numpy(X.astype(np.float32)))
 
 
@@ -35,7 +43,8 @@ def circle_dataset(n=8000):
     x += r * np.cos(theta)
     y += r * np.sin(theta)
     X = np.stack((x, y), axis=1)
-    X *= 3
+    X -= X.mean(axis=0)
+    X /= X.std(axis=0)
     return TensorDataset(torch.from_numpy(X.astype(np.float32)))
 
 
@@ -52,6 +61,8 @@ def dino_dataset(n=8000):
     x = (x/54 - 1) * 4
     y = (y/48 - 1) * 4
     X = np.stack((x, y), axis=1)
+    X -= X.mean(axis=0)
+    X /= X.std(axis=0)
     return TensorDataset(torch.from_numpy(X.astype(np.float32)))
 
 

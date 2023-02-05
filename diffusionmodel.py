@@ -36,7 +36,6 @@ class DiffusionModel(pl.LightningModule):
     def validation_step(self, batch, batch_idx):
         loss = self.nll(batch)
         self.log("val_loss", loss)
-
         if batch_idx == 0:  # Plot and log MSE curve, for one batch per epoch
             mses = []
             loc, s = self.hparams.logsnr_loc, self.hparams.logsnr_scale
@@ -47,13 +46,12 @@ class DiffusionModel(pl.LightningModule):
                 mses.append(self.mse(x, t.ones(len(x), device=self.device) * logsnr).mean().cpu())
             tb = self.logger.experiment  # tensorboard logger
             fig = utils.plot_mse(logsnrs.cpu(), mses, mmse_g.cpu())
-            tb.add_figure('mses', fig)
+            tb.add_figure('mses', figure=fig, global_step=self.current_epoch)
         return loss
 
     def configure_optimizers(self):
         """Pytorch Lightning optimizer hook."""
-        optimizer = t.optim.Adam(self.parameters(), lr=self.hparams.learning_rate)
-        return optimizer
+        return t.optim.Adam(self.parameters(), lr=self.hparams.learning_rate)
 
     def noisy_channel(self, x, logsnr):
         """Add Gaussian noise to x, return "z" and epsilon."""
@@ -66,15 +64,13 @@ class DiffusionModel(pl.LightningModule):
         z, eps = self.noisy_channel(x, logsnr)
         eps_hat = self(z, logsnr)
         error = (eps - eps_hat).flatten(start_dim=1)
-        return t.einsum('ij,ij->i', error, error)  # MSE per sample
+        return t.einsum('ij,ij->i', error, error)  # MSE of epsilon estimate, per sample
 
     def nll(self, batch):
-        """Estimate of negative log likelihood for a batch, log p_alpha(z),
-        for z= sqrt-sigmoid(alpha) x + sqrt-sigmoid(-alpha) epsilon
-        alpha=None corresponds to infinity, which is log p(x), the data distribution.
-        """
+        """Estimate of negative log likelihood for a batch, - E_x [log p(x)], the data distribution."""
         x = batch[0]
-        logsnr, weights = utils.logistic_integrate(len(x), self.hparams.logsnr_loc, self.hparams.logsnr_scale, device=self.device)  # use same device as LightningModule
+        logsnr, weights = utils.logistic_integrate(len(x), self.hparams.logsnr_loc, self.hparams.logsnr_scale,
+                                                   device=self.device)  # use same device as LightningModule
         mses = self.mse(x, logsnr)
         mmse_gap = mses - self.d * t.sigmoid(logsnr)  # MSE gap compared to using optimal denoiser for N(0,I)
         return self.h_g + 0.5 * (weights * mmse_gap).mean()  # Interpretable as differential entropy (nats)

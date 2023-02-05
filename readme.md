@@ -35,6 +35,25 @@ tensorboard --logdir .
 Optionally, you can do "python train.py", 
 and then load the checkpoint in the IPython notebook (optional cell included) to show the visualizations.
 
+### Fixing the log SNR sampling parameters
+This is the equivalent step to fixing the noise scheduler in other papers. 
+Our analysis suggests that a two parameter log logistic distribution for 
+log SNR is appropriate. We need to fix the mean and scale of this distribution. 
+In the ICLR paper, we show how to use the spectrum of the data
+to estimate appropriate values. For large datasets, this may be intractable.
+Instead, we can treat these two values as hyper-parameters. 
+However, rather than fix them blindly, we can estimate them empirically from one 
+run of the diffusion model. 
+
+To empirically set these hyper-parameters. Run the diffusion model once with the 
+default values, and then use tensorboard to look at the MSE plot. 
+
+TODO: picture of MSE curve
+We want to pick the location, logsnr_loc to be the 50 percent quantile, 
+and the scale to be the distance to the 75th percent quantile. Note the maximum value 
+for MSE should be d. 
+
+
 ## Train on CIFAR-10
 
 ```train

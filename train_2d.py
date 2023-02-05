@@ -16,13 +16,14 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--experiment_name", type=str, default="base")
     parser.add_argument("--dataset", type=str, default="dino", choices=["circle", "dino", "line", "moons"])
-    parser.add_argument("--train_batch_size", type=int, default=32)
-    parser.add_argument("--eval_batch_size", type=int, default=1000)
+    parser.add_argument("--train_batch_size", type=int, default=128)
+    parser.add_argument("--eval_batch_size", type=int, default=1024)
     parser.add_argument("--num_epochs", type=int, default=160)
-    parser.add_argument("--learning_rate", type=float, default=1e-3)
+    parser.add_argument("--learning_rate", type=float, default=4e-3)
     parser.add_argument("--num_timesteps", type=int, default=50)
     parser.add_argument("--beta_schedule", type=str, default="linear", choices=["linear", "quadratic"])  # Only for DDPM sampler
-    parser.add_argument("--logistic_params", type=tuple, default=(2., 3.))  # lognsr location and scale parameters
+    parser.add_argument("--logsnr_loc", type=float, default=0.)  # lognsr location and scale parameters
+    parser.add_argument("--logsnr_scale", type=float, default=3.)  # lognsr location and scale parameters
     parser.add_argument("--embedding_size", type=int, default=128)
     parser.add_argument("--hidden_size", type=int, default=128)
     parser.add_argument("--hidden_layers", type=int, default=3)
@@ -39,7 +40,7 @@ if __name__ == "__main__":
     n = len(dataset)
     train, val = torch.utils.data.random_split(dataset, [int(0.9*n), n - int(0.9*n)])
     train_dl = DataLoader(train, batch_size=config.train_batch_size, shuffle=True, drop_last=True)
-    val_dl = DataLoader(val, batch_size=config.train_batch_size, shuffle=False, drop_last=True)
+    val_dl = DataLoader(val, batch_size=config.eval_batch_size, shuffle=False, drop_last=False)
 
     # Model
     denoiser = nets.MLP(in_dim=2,
@@ -48,7 +49,7 @@ if __name__ == "__main__":
     dm = diffusionmodel.DiffusionModel(denoiser,
                                        x_shape=(2,),
                                        learning_rate=config.learning_rate,
-                                       logsnr_loc=config.logistic_params[0], logsnr_scale=config.logistic_params[1])
+                                       logsnr_loc=config.logsnr_loc, logsnr_scale=config.logsnr_scale)
 
     # Train
     x_sample = dataset.tensors[0].numpy()
@@ -60,7 +61,7 @@ if __name__ == "__main__":
         grid_x, grid_y = None, None
         def on_train_epoch_end(self, trainer, pl_module):
             # Save contour plot info
-            c = 4.4
+            c = 3.
             x_min, x_max, y_min, y_max, r = -c, c, -c, c, 40
             grid_x, grid_y = torch.meshgrid(torch.linspace(x_min, x_max, r), torch.linspace(y_min, y_max, r), indexing='ij')
             xs = torch.stack([grid_x.flatten(), grid_y.flatten()]).T
@@ -94,6 +95,7 @@ if __name__ == "__main__":
                 cs = ax.contourf(self.grid_x, self.grid_y, self.save_grid[this_epoch], levels)
                 ax.scatter(x_sample[:, 0], x_sample[:,1], s=40, c='black', alpha=0.6)
             cbar = fig.colorbar(cs, ax=ax)
+            cbar.ax.set_label(['$-\log p(x)$'])
             fig.tight_layout()
             fig.savefig(f"{imgdir}/contours.png")
 
