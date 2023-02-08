@@ -20,8 +20,6 @@ if __name__ == "__main__":
     parser.add_argument("--eval_batch_size", type=int, default=1024)
     parser.add_argument("--num_epochs", type=int, default=160)
     parser.add_argument("--learning_rate", type=float, default=1e-3)
-    parser.add_argument("--num_timesteps", type=int, default=50)
-    # parser.add_argument("--beta_schedule", type=str, default="linear", choices=["linear", "quadratic"])  # Only for DDPM sampler
     parser.add_argument("--logsnr_loc", type=float, default=0.)  # lognsr location and scale parameters
     parser.add_argument("--logsnr_scale", type=float, default=3.)  # lognsr location and scale parameters
     parser.add_argument("--embedding_size", type=int, default=128)
