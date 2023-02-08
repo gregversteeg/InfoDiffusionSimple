@@ -12,6 +12,17 @@ from sklearn.datasets import make_moons
 from torch.utils.data import TensorDataset
 
 
+def scg(n=20000):
+    """Strongly correlated Gaussian"""
+    # Load synthetic dataset, visualize and make dataloader
+    cov = torch.tensor([[1., -0.4950 / 0.5050], [-0.4950 / 0.5050, 1.]])
+    mu = torch.zeros(2)
+    q_d = torch.distributions.multivariate_normal.MultivariateNormal(mu, cov)
+    # TODO: Can use "transformed distributions" to do more complex distributions - pyro or flowtorch?
+    print("True entropy of this Gaussian distribution is:", q_d.entropy())
+    return TensorDataset(q_d.sample((n,)))
+
+
 def moons_dataset(n=8000):
     X, _ = make_moons(n_samples=n, random_state=42, noise=0.03)
     X[:, 0] = (X[:, 0] + 0.3) * 2 - 1
@@ -49,7 +60,7 @@ def circle_dataset(n=8000):
 
 
 def dino_dataset(n=8000):
-    df = pd.read_csv("figs/DatasaurusDozen.tsv", sep="\t")
+    df = pd.read_csv("assets/DatasaurusDozen.tsv", sep="\t")
     df = df[df["dataset"] == "dino"]
 
     rng = np.random.default_rng(42)
@@ -75,5 +86,7 @@ def get_dataset(name, n=8000):
         return line_dataset(n)
     elif name == "circle":
         return circle_dataset(n)
+    elif name == "scg":
+        return scg(n)
     else:
         raise ValueError(f"Unknown dataset: {name}")

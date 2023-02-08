@@ -1,6 +1,7 @@
-import math
+import numpy as np
 import torch as t
 import torch.nn as nn
+from diffusers import UNet2DModel
 
 
 class MLP(nn.Module):
@@ -14,9 +15,9 @@ class MLP(nn.Module):
         self.dropout = dropout
 
         self.layers = nn.ModuleList()
-        self.time_mlp = SinusoidalEmbedding(emb_size, scale=25.)  # "time" embedding in prev work is 1-1000. Ours is logsnr, ~(-5, 10)
-        self.input_mlp1 = SinusoidalEmbedding(emb_size, scale=25.)
-        self.input_mlp2 = SinusoidalEmbedding(emb_size, scale=25.)
+        self.time_mlp = SinusoidalEmbedding(emb_size, scale=50.)  # "time" embedding in prev work is 1-1000. Ours is logsnr, ~(-5, 10)
+        self.input_mlp1 = SinusoidalEmbedding(emb_size, scale=100.)
+        self.input_mlp2 = SinusoidalEmbedding(emb_size, scale=100.)
 
         if self.embedding:
             self.layers.append(nn.Linear((in_dim + 1) * emb_size, hidden_dim))  # Concatenate, after embeddings
@@ -63,3 +64,27 @@ class SinusoidalEmbedding(nn.Module):
 
     def __len__(self):
         return self.size
+
+
+class WrapUNet2DModel(UNet2DModel):
+    """Wrap UNet2DModel to accept arguments compatible with Diffusion Model."""
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def forward(self, z, logsnr):
+        x = z[0]
+        timestep = self.logsnr2t(logsnr)
+        eps_hat = super().forward(x, timestep)["sample"]
+        return eps_hat
+
+    def logsnr2t(self, logsnr):
+        num_diffusion_steps = 10000 # improve the timestep precision
+        alphas_cumprod = t.sigmoid(logsnr)
+        scale = 1000 / num_diffusion_steps
+        beta_start = scale * 0.0001
+        beta_end = scale * 0.02
+        betas = np.linspace(beta_start, beta_end, num_diffusion_steps, dtype=np.float64)
+        alphas = 1.0 - betas
+        alphabarGT = t.tensor(np.cumprod(alphas, axis=0), device=alphas_cumprod.device)
+        timestep = t.argmin(abs(alphabarGT-alphas_cumprod[0])) * scale # only use one alphas_cumprod in the batch
+        return timestep * t.ones(alphas_cumprod.shape[0], device=alphas_cumprod.device)  # reconvert to batch

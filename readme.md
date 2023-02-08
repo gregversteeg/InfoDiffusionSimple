@@ -1,7 +1,7 @@
 # Simple Information-theoretic diffusion
 
 A repository for the ICLR 2023 paper 
-[here](https://openreview.net/forum?id=UvmDCdSPDOW)
+[Information-Theoretic Diffusion](https://openreview.net/forum?id=UvmDCdSPDOW)
 containing simplified examples. 
 
 
@@ -10,7 +10,7 @@ containing simplified examples.
 To install requirements:
 
 ```setup
-pip install numpy scipy matplotlib scikit-learn notebook torch pytorch-lightning
+pip install numpy scipy matplotlib scikit-learn torch torchvision pytorch-lightning tensorboard diffusers
 ```
 Pytorch lightning is used to simplify boilerplate, 
 and makes it easier to exploit different compute resources. 
@@ -18,22 +18,19 @@ and makes it easier to exploit different compute resources.
 
 ## Train and evaluate 2D examples
 
-To train and generate figures, run this notebook. 
-
+To train and generate figures, run this script.
 ```train
-jupyter notebook 2d_example.ipynb
+python train_2d.py --dataset {dino,moons,scg,line,circle}
 ```
-
-The diffusion model takes a denoising architecture as input (arguments are input and log SNR, output is size of input).
-This simplified code assumes continuous density estimation, and requires specifying the log SNR range 
-(can be estimated via data spectrum as shown in our paper)
-
-Pytorch lightning automatically checkpoints and logs with tensorboard. Don't forget to turn it on for visualization:  
+Statistics and image outputs appear in tensorboard. 
 ```log
 tensorboard --logdir .
 ```
-Optionally, you can do "python train.py", 
-and then load the checkpoint in the IPython notebook (optional cell included) to show the visualizations.
+The main ideas can be read in the class in diffusionmodel.py. 
+The diffusion model takes a denoising architecture as input (arguments are input and log SNR, output is size of input).
+This simplified code assumes continuous density estimation, and requires specifying the log SNR range 
+(see discussion below).
+
 
 ### Fixing the log SNR sampling parameters
 This is the equivalent step to fixing the noise scheduler in other papers. 
@@ -77,3 +74,19 @@ As an initial experiment, we consider the following 2D distribution:
 We achieve an expected log likelihood of ... 
 Note that the numbers in the notebook do not include ensembling, as in the paper. 
 Also we estimate the continuous log-likelihood, while previous work focuses on discrete probability. 
+
+## BibTeX
+```
+@inproceedings{
+kong2023informationtheoretic,
+title={Information-Theoretic Diffusion},
+author={Xianghao Kong and Rob Brekelmans and Greg {Ver Steeg}},
+booktitle={International Conference on Learning Representations},
+year={2023},
+url={https://openreview.net/forum?id=UvmDCdSPDOW} }
+```
+
+## References
+
+Inspired by the [tiny diffusion](https://github.com/tanelp/tiny-diffusion) repo. 
+To reproduce results in the paper, see our [main repository](https://github.com/kxh001/ITdiffusion/).

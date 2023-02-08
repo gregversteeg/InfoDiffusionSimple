@@ -15,13 +15,13 @@ device = "cuda" if torch.cuda.is_available() else "cpu"
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--experiment_name", type=str, default="base")
-    parser.add_argument("--dataset", type=str, default="dino", choices=["circle", "dino", "line", "moons"])
+    parser.add_argument("--dataset", type=str, default="dino", choices=["circle", "dino", "line", "moons", "scg"])
     parser.add_argument("--train_batch_size", type=int, default=128)
     parser.add_argument("--eval_batch_size", type=int, default=1024)
     parser.add_argument("--num_epochs", type=int, default=160)
-    parser.add_argument("--learning_rate", type=float, default=4e-3)
+    parser.add_argument("--learning_rate", type=float, default=1e-3)
     parser.add_argument("--num_timesteps", type=int, default=50)
-    parser.add_argument("--beta_schedule", type=str, default="linear", choices=["linear", "quadratic"])  # Only for DDPM sampler
+    # parser.add_argument("--beta_schedule", type=str, default="linear", choices=["linear", "quadratic"])  # Only for DDPM sampler
     parser.add_argument("--logsnr_loc", type=float, default=0.)  # lognsr location and scale parameters
     parser.add_argument("--logsnr_scale", type=float, default=3.)  # lognsr location and scale parameters
     parser.add_argument("--embedding_size", type=int, default=128)
@@ -30,7 +30,7 @@ if __name__ == "__main__":
     parser.add_argument("--embedding", type=bool, default=True, help="Use sinusoidal embedding for input and snr/time")
     config = parser.parse_args()
 
-    outdir = f"exps/{config.experiment_name}"
+    outdir = f"exps/{config.dataset}-{config.experiment_name}"
     os.makedirs(outdir, exist_ok=True)
     imgdir = f"{outdir}/images"
     os.makedirs(imgdir, exist_ok=True)
@@ -40,7 +40,7 @@ if __name__ == "__main__":
     n = len(dataset)
     train, val = torch.utils.data.random_split(dataset, [int(0.9*n), n - int(0.9*n)])
     train_dl = DataLoader(train, batch_size=config.train_batch_size, shuffle=True, drop_last=True)
-    val_dl = DataLoader(val, batch_size=config.eval_batch_size, shuffle=False, drop_last=False)
+    val_dl = DataLoader(val, batch_size=(n - int(0.9*n)), shuffle=False, drop_last=False)  # one giant batch
 
     # Model
     denoiser = nets.MLP(in_dim=2,
@@ -85,18 +85,22 @@ if __name__ == "__main__":
             fig, axs = plt.subplots(1, k, figsize=(10*k, 10))
             # cs = axs[-1].contourf(self.grid_x, self.grid_y, self.save_grid[-1])
             # levels = cs.levels
-            levels = [-10., -4., -3., -2., -1.]
+            levels = [-5., -4., -3., -2., -1.]
 
             for i, ax in enumerate(axs):
                 this_epoch = (i+1) * multiple - 1
                 ax.set_title(f'Epoch {this_epoch}')
                 ax.set_ylabel('$x_1$')
                 ax.set_xlabel('$x_2$')
-                cs = ax.contourf(self.grid_x, self.grid_y, self.save_grid[this_epoch], levels)
+                cs = ax.contourf(self.grid_x, self.grid_y, self.save_grid[this_epoch], levels, extend='max')
                 ax.scatter(x_sample[:, 0], x_sample[:,1], s=40, c='black', alpha=0.6)
             cbar = fig.colorbar(cs, ax=ax)
             cbar.ax.set_label(['$-\log p(x)$'])
             fig.tight_layout()
+
+            # log and save contour plot figure
+            tb = pl_module.logger.experiment  # tensorboard logger
+            tb.add_figure('contours', figure=fig)
             fig.savefig(f"{imgdir}/contours.png")
 
     trainer = pl.Trainer(max_epochs=config.num_epochs, enable_checkpointing=True, accelerator=device,
