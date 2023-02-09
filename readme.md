@@ -4,6 +4,7 @@ A repository for the ICLR 2023 paper
 [Information-Theoretic Diffusion](https://openreview.net/forum?id=UvmDCdSPDOW)
 containing simplified examples. 
 
+Note: this code will be completed in the next few days. 
 
 ## Requirements
 
