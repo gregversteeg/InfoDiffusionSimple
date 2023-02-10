@@ -5,8 +5,8 @@ A repository for the ICLR 2023 paper
 containing simplified examples. 
 
 This repository is simplified compared to the [main repository](https://github.com/kxh001/ITdiffusion/):
-1. Only consider *continuous* density estimation (most diffusion papers do 
-treating pixels as discrete)
+1. Only consider *continuous* density estimation (most diffusion papers 
+treat pixels as discrete)
 2. Omits the ensembling which improves results but complicates the code 
 3. Treats the log-logistic distribution (location, scale) as hyper-parameters (see below), rather than estimating them as did in the paper. 
 4. Pytorch lightning is used to simplify boilerplate, 
@@ -20,7 +20,7 @@ title={Information-Theoretic Diffusion},
 author={Xianghao Kong and Rob Brekelmans and Greg {Ver Steeg}},
 booktitle={International Conference on Learning Representations},
 year={2023},
-url={https://openreview.net/forum?id=UvmDCdSPDOW} }
+url={https://arxiv.org/abs/2302.03792} }
 ```
 
 ## Requirements
@@ -37,6 +37,8 @@ To train and generate figures, run this script.
 ```train
 python train_2d.py --dataset {dino,moons,scg,line,circle}
 ```
+Run with `--help` flag to see hyper-parameters.
+
 Statistics and image outputs appear in tensorboard. 
 ```log
 tensorboard --logdir .
@@ -48,7 +50,8 @@ This simplified code assumes continuous density estimation, and requires specify
 
 ## Train on CIFAR-10
 
-TODO: working minimal example coming soon. The main repository contains the paper code ()
+TODO: working minimal example coming soon. The [main repository](https://github.com/kxh001/ITdiffusion/) 
+contains the paper code including CIFAR-10 experiments.
 
 ```train
 python train_cifar10.py
@@ -57,10 +60,10 @@ MSE curves and log likelihoods are tracked in tensorboard.
 Checkpoints are saved automatically by Pytorch Lightning. 
 
 
-### Fixing the log SNR sampling parameters
-This is the equivalent step to fixing the noise scheduler in other papers. 
+## Fixing the log SNR sampling parameters
+This is the equivalent step to fixing the noise scheduler in other diffusion papers. 
 In our paper, we found that the logistic distribution over log SNR values is optimal 
-for Gaussians and a good choice for more complex distributions like CIFAR too. 
+for Gaussians and a good choice for more complex distributions like CIFAR. 
 We only need to estimate two parameters, the location and scale of this distribution. 
 In the paper, we estimate them from the spectrum of the data. 
 
@@ -74,9 +77,13 @@ default values, and then use tensorboard to look at the MSE plot.
 Ideally, you'd set the location, logsnr_loc to be the 50 percent quantile, 
 and the scale to be the distance from the 50 percent quantile to the 25th or 75th percent quantile.
 (Note the maximum value for MSE should be d, so you should divide by d to interpret these as quantiles.)
-More heuristically, you want the location to be in the middle of the largest gap 
+More heuristically, you want the location to be in the middle of the gap 
 between the MMSE Gaussian curve, and the true MSE curve. This is also a good way to 
 diagnose training, as we should always do at least as well as the Gaussian MMSE. 
+Note that the MSE curve (shown for epsilon) is not necessarily monotonic. 
+If the data is exactly on a low-d manifold (like the dino line drawing), the MSEs can go to zero at high log SNR.
+The same is true for discrete data, as shown in the paper. In these cases, the *differential entropy* is formally 
+negative infinite. We get an upper bound from cutting off our log SNR at finite values (and from not necessarily finding the true MMSE). 
 
 
 ## Results
