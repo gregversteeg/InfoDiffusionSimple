@@ -1,3 +1,4 @@
+"""Minimal example of training on CIFAR-10, coming soon."""
 import argparse
 import os
 import torch
@@ -43,7 +44,7 @@ if __name__ == "__main__":
         denoiser = WrapUNet2DModel()
 
     dm = diffusionmodel.DiffusionModel(denoiser,
-                                       x_shape=(3, 32, 32),
+                                       x_shape=(3, 32, 32),  # TODO: order?
                                        learning_rate=config.learning_rate,
                                        logsnr_loc=config.logistic_params[0], logsnr_scale=config.logistic_params[1])
 

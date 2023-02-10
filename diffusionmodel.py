@@ -49,7 +49,7 @@ class DiffusionModel(pl.LightningModule):
         mmse_gap = mses - self.d * t.sigmoid(logsnr)  # MSE gap compared to using optimal denoiser for N(0,I)
         return self.h_g + 0.5 * (weights * mmse_gap).mean()  # Interpretable as differential entropy (nats)
 
-    def nll_x(self, x, npoints=100):
+    def nll_x(self, x, npoints=200):
         """-log p(x) for a single sample, x"""
         return self.nll([x.unsqueeze(0).expand((npoints,) + self.hparams.x_shape)])
 

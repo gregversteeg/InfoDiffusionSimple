@@ -30,7 +30,7 @@ if __name__ == "__main__":
 
     outdir = f"exps/{config.dataset}-{config.experiment_name}"
     os.makedirs(outdir, exist_ok=True)
-    imgdir = f"{outdir}/images"
+    imgdir = f"assets"
     os.makedirs(imgdir, exist_ok=True)
 
     # Data
@@ -74,15 +74,12 @@ if __name__ == "__main__":
         def on_train_end(self, trainer, pl_module):
             print("training is ending")
             trainer.save_checkpoint(f"{outdir}/model.pth")
-            # new_model = MyLightningModule.load_from_checkpoint(checkpoint_path=f"{outdir}/model.pth")
 
             # Contour plots
             n = len(self.save_grid)
             k = 8  # max figures
             multiple = max(n // k, 1)
             fig, axs = plt.subplots(1, k, figsize=(10*k, 10))
-            # cs = axs[-1].contourf(self.grid_x, self.grid_y, self.save_grid[-1])
-            # levels = cs.levels
             levels = [-5., -4., -3., -2., -1.]
 
             for i, ax in enumerate(axs):
@@ -99,7 +96,7 @@ if __name__ == "__main__":
             # log and save contour plot figure
             tb = pl_module.logger.experiment  # tensorboard logger
             tb.add_figure('contours', figure=fig)
-            fig.savefig(f"{imgdir}/contours.png")
+            fig.savefig(f"{imgdir}/{config.dataset}-contours.png")
 
     trainer = pl.Trainer(max_epochs=config.num_epochs, enable_checkpointing=True, accelerator=device,
                          default_root_dir=outdir, callbacks=[MyCallback()])
