@@ -70,6 +70,7 @@ To empirically set these hyper-parameters, run the diffusion model once with the
 default values, and then use tensorboard to look at the MSE plot. 
 
 ![mse](./assets/mse_example.png)
+
 Ideally, you'd set the location, logsnr_loc to be the 50 percent quantile, 
 and the scale to be the distance from the 50 percent quantile to the 25th or 75th percent quantile.
 (Note the maximum value for MSE should be d, so you should divide by d to interpret these as quantiles.)
@@ -80,11 +81,14 @@ diagnose training, as we should always do at least as well as the Gaussian MMSE.
 
 ## Results
 
+We visualize the density as contour plots using
+$\log p(x) = c + 1/2 \int mmse(x,\alpha) d\alpha$, as discussed in the paper. 
+Samples of each distribution are also plotted for reference. 
 
 ### Gaussian 
 The strongly correlated Gaussian is a nice test case. We know the true entropy  (1.22 nats) and can check 
 that our validation loss approaches this number. 
-![scgloss](./assets/scg-loss.png)
+![scgloss](./assets/scg_val_loss.png)
 
 ![scg](./assets/scg-contours.png)
 
