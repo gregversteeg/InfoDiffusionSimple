@@ -1,7 +1,7 @@
 # Simple Information-theoretic diffusion
 
 A repository for the ICLR 2023 paper 
-[Information-Theoretic Diffusion](https://openreview.net/forum?id=UvmDCdSPDOW)
+[Information-Theoretic Diffusion](https://arxiv.org/abs/2302.03792)
 containing simplified examples. 
 
 This repository is simplified compared to the [main repository](https://github.com/kxh001/ITdiffusion/):
