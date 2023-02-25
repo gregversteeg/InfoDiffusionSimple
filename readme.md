@@ -8,7 +8,8 @@ This repository is simplified compared to the [main repository](https://github.c
 1. Only consider *continuous* density estimation (most diffusion papers 
 treat pixels as discrete)
 2. Omits the ensembling which improves results but complicates the code 
-3. Treats the log-logistic distribution (location, scale) as hyper-parameters (see below), rather than estimating them as did in the paper. 
+3. Treats the log-logistic distribution (location, scale) as hyper-parameters (see below), 
+rather than estimating them as done in the paper. 
 4. Pytorch lightning is used to simplify boilerplate, 
 and makes it easier to exploit different compute resources. 
 
@@ -50,8 +51,10 @@ This simplified code assumes continuous density estimation, and requires specify
 
 ## Train on CIFAR-10
 
-TODO: working minimal example coming soon. The [main repository](https://github.com/kxh001/ITdiffusion/) 
+The [main repository](https://github.com/kxh001/ITdiffusion/)
 contains the paper code including CIFAR-10 experiments.
+The following command trains a CIFAR-10 model using IT diffusion, starting with a pretrained U-Net. 
+See --help for more options, including training from scratch. 
 
 ```train
 python train_cifar10.py
