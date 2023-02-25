@@ -95,7 +95,7 @@ def logistic_integrate(npoints, loc, scale, clip=3., device='cpu'):
     # IID samples from uniform, use inverse CDF to transform to target distribution
     ps = t.rand(npoints, device=device)
     ps = t.sigmoid(-clip) + (t.sigmoid(clip) - t.sigmoid(-clip)) * ps  # Scale quantiles to clip
-    logsnr = loc + scale * t.logit(ps)  # Using quantile function for logistic distribution
+    logsnr = loc + scale * (t.log(ps) - t.log(1-ps))  # Using quantile function for logistic distribution
 
     # importance weights
     weights = scale * t.tanh(clip / 2) / (t.sigmoid((logsnr - loc)/scale) * t.sigmoid(-(logsnr - loc)/scale))

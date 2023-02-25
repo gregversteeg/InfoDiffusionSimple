@@ -10,6 +10,7 @@ from pytorch_lightning.callbacks import Callback
 # Internal imports
 import nets, datasets, diffusionmodel
 device = "cuda" if torch.cuda.is_available() else "cpu"
+device = "mps" if torch.backends.mps.is_available() else device  # For M1/M2 Macs
 
 
 if __name__ == "__main__":

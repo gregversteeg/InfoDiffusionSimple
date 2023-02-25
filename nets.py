@@ -71,20 +71,19 @@ class WrapUNet2DModel(UNet2DModel):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    def forward(self, z, logsnr):
-        x = z[0]
+    def forward(self, x, logsnr):
         timestep = self.logsnr2t(logsnr)
         eps_hat = super().forward(x, timestep)["sample"]
         return eps_hat
 
     def logsnr2t(self, logsnr):
-        num_diffusion_steps = 10000 # improve the timestep precision
+        num_diffusion_steps = 10000  # improve the timestep precision
         alphas_cumprod = t.sigmoid(logsnr)
         scale = 1000 / num_diffusion_steps
         beta_start = scale * 0.0001
         beta_end = scale * 0.02
         betas = np.linspace(beta_start, beta_end, num_diffusion_steps, dtype=np.float64)
         alphas = 1.0 - betas
-        alphabarGT = t.tensor(np.cumprod(alphas, axis=0), device=alphas_cumprod.device)
-        timestep = t.argmin(abs(alphabarGT-alphas_cumprod[0])) * scale # only use one alphas_cumprod in the batch
-        return timestep * t.ones(alphas_cumprod.shape[0], device=alphas_cumprod.device)  # reconvert to batch
+        alphabarGT = t.tensor(np.cumprod(alphas, axis=0), device=logsnr.device, dtype=logsnr.dtype)
+        timestep = t.argmin(abs(alphabarGT-alphas_cumprod[0])) * scale  # only use one alphas_cumprod in the batch
+        return timestep * t.ones(alphas_cumprod.shape[0], device=logsnr.device)  # reconvert to batch
