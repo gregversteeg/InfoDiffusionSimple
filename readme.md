@@ -108,16 +108,17 @@ A fun, highly nonlinear density, that is strongly peaked on a low-dimensional ma
 ![dino](./assets/dino-contours.png)
 
 ### Moons
-A classic example - we can see that we have a low density chasm that splits the two clusters. 
+A classic example - we can see that we have a low density (white) area that splits the two clusters. 
 ![moons](./assets/moons-contours.png)
 
 ### Circle
 
 ![circle](./assets/circle-contours.png)
 
-### Line
+### Square
 
-Expected to have sharp edges that are not well-modeled. 
+Uniform disribution in a square. The sharp edges are not well modeled by samplers but seem to be
+captured well by the probability density.
 
 ![line](./assets/line-contours.png)
 

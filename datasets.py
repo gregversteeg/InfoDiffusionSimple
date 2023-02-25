@@ -33,6 +33,7 @@ def moons_dataset(n=8000):
 
 
 def line_dataset(n=8000):
+    # This ends up looking like a square because we standardize the data
     rng = np.random.default_rng(42)
     x = rng.uniform(-0.5, 0.5, n)
     y = rng.uniform(-1, 1, n)
