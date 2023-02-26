@@ -21,9 +21,9 @@ if __name__ == "__main__":
     parser.add_argument("--pretrained", type=bool, default=True)
     parser.add_argument("--train_batch_size", type=int, default=64)
     parser.add_argument("--eval_batch_size", type=int, default=100)
-    parser.add_argument("--num_epochs", type=int, default=160)
+    parser.add_argument("--num_epochs", type=int, default=10)
     parser.add_argument("--learning_rate", type=float, default=1e-3)
-    parser.add_argument("--logistic_params", type=tuple, default=(6., 5.))  # lognsr location and scale parameters
+    parser.add_argument("--logistic_params", type=tuple, default=(10., 5.))  # lognsr location and scale parameters
     config = parser.parse_args()
 
     outdir = f"exps/{config.experiment_name}"
