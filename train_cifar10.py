@@ -19,8 +19,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--experiment_name", type=str, default="cifar10")
     parser.add_argument("--pretrained", type=bool, default=True)
-    parser.add_argument("--train_batch_size", type=int, default=64)
-    parser.add_argument("--eval_batch_size", type=int, default=100)
+    parser.add_argument("--train_batch_size", type=int, default=128)
+    parser.add_argument("--eval_batch_size", type=int, default=1000)
     parser.add_argument("--num_epochs", type=int, default=10)
     parser.add_argument("--learning_rate", type=float, default=1e-3)
     parser.add_argument("--logistic_params", type=tuple, default=(10., 5.))  # lognsr location and scale parameters
@@ -38,8 +38,8 @@ if __name__ == "__main__":
 
     train = CIFAR10(root='./data', train=True, download=True, transform=transform)
     test = CIFAR10(root='./data', train=False, download=True, transform=transform)
-    train_dl = DataLoader(train, batch_size=config.train_batch_size, shuffle=True, drop_last=True, num_workers=12)
-    val_dl = DataLoader(test, batch_size=config.train_batch_size, shuffle=False, drop_last=True, num_workers=12)
+    train_dl = DataLoader(train, batch_size=config.train_batch_size, shuffle=True, drop_last=True, num_workers=6)
+    val_dl = DataLoader(test, batch_size=config.train_batch_size, shuffle=True, drop_last=True, num_workers=6)
 
 
     # Model

@@ -61,7 +61,7 @@ class DiffusionModel(pl.LightningModule):
         """Pytorch Lightning optimizer hook."""
         return t.optim.Adam(self.parameters(), lr=self.hparams.learning_rate)
 
-    def validation_step(self, batch, batch_idx, nrepeat=20):
+    def validation_step(self, batch, batch_idx, nrepeat=1):
         with t.no_grad():
             loss = 0.
             for i in range(nrepeat):
