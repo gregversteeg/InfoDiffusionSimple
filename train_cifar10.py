@@ -39,7 +39,7 @@ if __name__ == "__main__":
     train = CIFAR10(root='./data', train=True, download=True, transform=transform)
     test = CIFAR10(root='./data', train=False, download=True, transform=transform)
     train_dl = DataLoader(train, batch_size=config.train_batch_size, shuffle=True, drop_last=True, num_workers=6)
-    val_dl = DataLoader(test, batch_size=config.train_batch_size, shuffle=True, drop_last=True, num_workers=6)
+    val_dl = DataLoader(test, batch_size=config.train_batch_size, shuffle=False, drop_last=True, num_workers=6)
 
     # Model
     model_id = "google/ddpm-cifar10-32"
