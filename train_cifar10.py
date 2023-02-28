@@ -33,14 +33,13 @@ if __name__ == "__main__":
 
     # Data
     transform = transforms.Compose(
-        [transforms.ToTensor(),
-         transforms.Normalize((127.5, 127.5, 127.5), (127.5, 127.5, 127.5))])
+        [transforms.ToTensor(),  # Default scaling 0,1. Change to -1,1 to match paper
+         transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
 
     train = CIFAR10(root='./data', train=True, download=True, transform=transform)
     test = CIFAR10(root='./data', train=False, download=True, transform=transform)
     train_dl = DataLoader(train, batch_size=config.train_batch_size, shuffle=True, drop_last=True, num_workers=6)
     val_dl = DataLoader(test, batch_size=config.train_batch_size, shuffle=True, drop_last=True, num_workers=6)
-
 
     # Model
     model_id = "google/ddpm-cifar10-32"
