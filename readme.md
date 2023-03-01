@@ -6,9 +6,11 @@ containing simplified code and examples.
 The paper introduces an exact equivalence between *probability* and *optimal denoising*. 
 Mathematically, this is expressed as,
 ```math
--\log p(x) = c+ 1/2\int_0^\infty \mbox{mmse}(x,SNR) dSNR
+-\log p(x) = c + 1/2\int_0^\infty \mbox{mmse}(x,SNR) dSNR
 ```
-where mmse refers to the pointwise error on $x$ of the optimal denoiser.
+where $c$ is a constant and 
+mmse refers to the pointwise error on $x$ of the optimal denoiser 
+at different noise levels specified by SNR.
 
 This repository is simplified compared to the [main repository](https://github.com/kxh001/ITdiffusion/):
 1. Only consider *continuous* density estimation (most diffusion papers 
