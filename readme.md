@@ -122,6 +122,17 @@ captured well by the probability density.
 
 ![line](./assets/line-contours.png)
 
+### CIFAR-10
+
+For location and scale of the logistic importance sampling distribution, we used (6, 3).
+The MSE curve after 50 epochs of training is shown below. 
+
+![cifar10mse](./assets/cifar10_mse.png)
+
+The validation loss is about -8400 nats. Converting to bits/dim, we would get
+-8400 / log(2) / (32*32*3) = -3.94. 
+This result is comparable to the result "DDPM-tuned" in the paper Table 1, 
+and is almost identical despite the simplifications to the method. 
 
 ## References
 

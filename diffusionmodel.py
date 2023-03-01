@@ -71,7 +71,7 @@ class DiffusionModel(pl.LightningModule):
             mses = []
             loc, s = self.hparams.logsnr_loc, self.hparams.logsnr_scale
             x = batch[0]
-            logsnrs = t.linspace(loc - 3 * s, loc + 3 * s, 100, device=self.device)
+            logsnrs = t.linspace(loc - 4 * s, loc + 4 * s, 100, device=self.device)
             mmse_g = self.d * t.sigmoid(logsnrs)
             for logsnr in logsnrs:
                 mses.append(self.mse(x, t.ones(len(x), device=self.device) * logsnr).mean().cpu())
@@ -87,7 +87,7 @@ class DiffusionModel(pl.LightningModule):
         return loss
 
 
-def logistic_integrate(npoints, loc, scale, clip=3., device='cpu'):
+def logistic_integrate(npoints, loc, scale, clip=4., device='cpu'):
     """Return sample point and weights for integration, using
     a truncated logistic distribution as the base, and importance weights.
     """

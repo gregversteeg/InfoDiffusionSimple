@@ -21,8 +21,8 @@ if __name__ == "__main__":
     parser.add_argument("--pretrained", type=bool, default=True)
     parser.add_argument("--train_batch_size", type=int, default=128)
     parser.add_argument("--eval_batch_size", type=int, default=1000)
-    parser.add_argument("--num_epochs", type=int, default=10)
-    parser.add_argument("--learning_rate", type=float, default=1e-3)
+    parser.add_argument("--num_epochs", type=int, default=20)
+    parser.add_argument("--learning_rate", type=float, default=1e-4)
     parser.add_argument("--logistic_params", type=tuple, default=(6., 3.))  # lognsr location and scale parameters
     config = parser.parse_args()
 
