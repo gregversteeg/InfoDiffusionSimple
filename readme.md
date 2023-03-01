@@ -53,7 +53,8 @@ Statistics and image outputs appear in tensorboard.
 tensorboard --logdir .
 ```
 The main ideas can be read in the class in diffusionmodel.py. 
-The diffusion model takes a denoising architecture as input (arguments are input and log SNR, output is size of input).
+The diffusion model takes a denoising architecture as input (arguments are input and log SNR, output has 
+the same size of input).
 This simplified code assumes continuous density estimation, and requires specifying the log SNR range 
 (see discussion below).
 
