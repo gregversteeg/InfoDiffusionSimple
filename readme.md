@@ -2,7 +2,13 @@
 
 A repository for the ICLR 2023 paper 
 [Information-Theoretic Diffusion](https://arxiv.org/abs/2302.03792)
-containing simplified examples. 
+containing simplified code and examples. 
+The paper introduces an exact equivalence between *probability* and *optimal denoising*. 
+Mathematically, this is expressed as,
+```math
+-\log p(x) = c+ 1/2\int_0^\infty \mbox{mmse}(x,SNR) dSNR
+```
+where mmse refers to the pointwise error on $x$ of the optimal denoiser.
 
 This repository is simplified compared to the [main repository](https://github.com/kxh001/ITdiffusion/):
 1. Only consider *continuous* density estimation (most diffusion papers 
@@ -111,7 +117,7 @@ A fun, highly nonlinear density, that is strongly peaked on a low-dimensional ma
 A classic example - we can see that we have a low density (white) area that splits the two clusters. 
 ![moons](./assets/moons-contours.png)
 
-### Circle
+### Circles
 
 ![circle](./assets/circle-contours.png)
 
