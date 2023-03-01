@@ -12,14 +12,6 @@ where $c$ is a constant and
 mmse refers to the pointwise error on $x$ of the optimal denoiser 
 at different noise levels specified by SNR.
 
-This repository is simplified compared to the [main repository](https://github.com/kxh001/ITdiffusion/):
-1. Only consider *continuous* density estimation (most diffusion papers 
-treat pixels as discrete)
-2. Omits the ensembling which improves results but complicates the code 
-3. Treats the log-logistic distribution (location, scale) as hyper-parameters (see below), 
-rather than estimating them as done in the paper. 
-4. Pytorch lightning is used to simplify boilerplate, 
-and makes it easier to exploit different compute resources. 
 
 ## BibTeX
 ```
@@ -39,6 +31,16 @@ To install requirements:
 ```setup
 pip install numpy scipy matplotlib scikit-learn torch torchvision pytorch-lightning tensorboard diffusers
 ```
+
+This repository is simplified compared to the [main repository](https://github.com/kxh001/ITdiffusion/):
+1. Only consider *continuous* density estimation (most diffusion papers 
+treat pixels as discrete)
+2. Omits the ensembling which improves results but complicates the code 
+3. Treats the log-logistic distribution (location, scale) as hyper-parameters (see below), 
+rather than estimating them as done in the paper. 
+4. Pytorch lightning is used to simplify boilerplate, 
+and makes it easier to exploit different compute resources. 
+
 
 ## Train and evaluate 2D examples
 
